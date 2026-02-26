@@ -177,12 +177,12 @@
         );
       }
 
-function tryShoot() {
-  if (player.cooldown > 0 || gameState !== 'playing') return;
-  bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
-  player.cooldown = player.fireRate;
-  playShoot();
-}
+      function tryShoot() {
+        if (player.cooldown > 0 || gameState !== 'playing') return;
+        bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
+        player.cooldown = player.fireRate;
+        playShoot();
+      }
       function update(dt) {
         if (gameState !== 'playing') return;
 
@@ -206,7 +206,7 @@ function tryShoot() {
         player.cooldown = Math.max(0, player.cooldown - dt);
         player.invuln = Math.max(0, player.invuln - dt);
 
-if (keys.has(' ')) tryShoot();
+        if (keys.has(' ')) tryShoot();
 
         spawnTimer += dt;
         if (spawnTimer >= difficulty.spawnInterval) {
@@ -359,9 +359,9 @@ if (keys.has(' ')) tryShoot();
         drawUI();
 
         if (gameState === 'start') {
-drawOverlay('RETRO SHOOTER', 'Press Tap to Start');
-...
-drawOverlay('GAME OVER', 'Press Tap to Restart');
+          drawOverlay('RETRO SHOOTER', 'Press Enter or Tap to Start');
+        } else if (gameState === 'gameover') {
+          drawOverlay('GAME OVER', 'Press Enter or Tap to Restart');
         }
       }
 
@@ -401,9 +401,28 @@ drawOverlay('GAME OVER', 'Press Tap to Restart');
       });
 
 
-canvas.addEventListener('pointerdown' ...);
-canvas.addEventListener('pointermove' ...);
-=======
+      canvas.addEventListener('pointerdown', (e) => {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume().catch(() => {});
+        }
+
+        if (gameState === 'start' || gameState === 'gameover') {
+          beginGame();
+          return;
+        }
+
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * WIDTH;
+        player.x = Math.max(player.w / 2 + 8, Math.min(WIDTH - player.w / 2 - 8, x));
+        tryShoot();
+      });
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (gameState !== 'playing' || (e.buttons & 1) === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * WIDTH;
+        player.x = Math.max(player.w / 2 + 8, Math.min(WIDTH - player.w / 2 - 8, x));
+      });
 
       soundToggle.addEventListener('click', () => {
         soundOn = !soundOn;

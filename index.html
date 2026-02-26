@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- deploy trigger -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -176,13 +177,12 @@
         );
       }
 
-      function tryShoot() {
-        if (player.cooldown > 0 || gameState !== 'playing') return;
-        bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
-        player.cooldown = player.fireRate;
-        playShoot();
-      }
-
+function tryShoot() {
+  if (player.cooldown > 0 || gameState !== 'playing') return;
+  bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
+  player.cooldown = player.fireRate;
+  playShoot();
+}
       function update(dt) {
         if (gameState !== 'playing') return;
 
@@ -206,7 +206,7 @@
         player.cooldown = Math.max(0, player.cooldown - dt);
         player.invuln = Math.max(0, player.invuln - dt);
 
-        if (keys.has(' ')) tryShoot();
+if (keys.has(' ')) tryShoot();
 
         spawnTimer += dt;
         if (spawnTimer >= difficulty.spawnInterval) {
@@ -359,9 +359,9 @@
         drawUI();
 
         if (gameState === 'start') {
-          drawOverlay('RETRO SHOOTER', 'Press Enter or Tap to Start');
-        } else if (gameState === 'gameover') {
-          drawOverlay('GAME OVER', 'Press Enter or Tap to Restart');
+drawOverlay('RETRO SHOOTER', 'Press Tap to Start');
+...
+drawOverlay('GAME OVER', 'Press Tap to Restart');
         }
       }
 
@@ -400,31 +400,10 @@
         keys.delete(e.key.toLowerCase());
       });
 
-      function getCanvasX(clientX) {
-        const rect = canvas.getBoundingClientRect();
-        const ratio = WIDTH / rect.width;
-        return (clientX - rect.left) * ratio;
-      }
 
-      canvas.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume().catch(() => {});
-        }
-        if (gameState === 'start' || gameState === 'gameover') {
-          beginGame();
-          return;
-        }
-        player.x = Math.max(player.w / 2 + 8, Math.min(WIDTH - player.w / 2 - 8, getCanvasX(e.clientX)));
-        tryShoot();
-      });
-
-      canvas.addEventListener('pointermove', (e) => {
-        if (gameState !== 'playing') return;
-        if (e.pointerType === 'touch' || (e.buttons & 1) === 1) {
-          player.x = Math.max(player.w / 2 + 8, Math.min(WIDTH - player.w / 2 - 8, getCanvasX(e.clientX)));
-        }
-      });
+canvas.addEventListener('pointerdown' ...);
+canvas.addEventListener('pointermove' ...);
+=======
 
       soundToggle.addEventListener('click', () => {
         soundOn = !soundOn;

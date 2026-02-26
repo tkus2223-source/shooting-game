@@ -177,6 +177,12 @@
         );
       }
 
+function tryShoot() {
+  if (player.cooldown > 0 || gameState !== 'playing') return;
+  bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
+  player.cooldown = player.fireRate;
+  playShoot();
+}
       function update(dt) {
         if (gameState !== 'playing') return;
 
@@ -200,11 +206,7 @@
         player.cooldown = Math.max(0, player.cooldown - dt);
         player.invuln = Math.max(0, player.invuln - dt);
 
-        if (keys.has(' ') && player.cooldown <= 0) {
-          bullets.push({ x: player.x, y: player.y - 18, w: 4, h: 14, speed: 440 });
-          player.cooldown = player.fireRate;
-          playShoot();
-        }
+if (keys.has(' ')) tryShoot();
 
         spawnTimer += dt;
         if (spawnTimer >= difficulty.spawnInterval) {
@@ -357,9 +359,9 @@
         drawUI();
 
         if (gameState === 'start') {
-          drawOverlay('RETRO SHOOTER', 'Press Enter to Start');
-        } else if (gameState === 'gameover') {
-          drawOverlay('GAME OVER', 'Press Enter to Restart');
+drawOverlay('RETRO SHOOTER', 'Press Tap to Start');
+...
+drawOverlay('GAME OVER', 'Press Tap to Restart');
         }
       }
 
@@ -397,6 +399,11 @@
       window.addEventListener('keyup', (e) => {
         keys.delete(e.key.toLowerCase());
       });
+
+
+canvas.addEventListener('pointerdown' ...);
+canvas.addEventListener('pointermove' ...);
+=======
 
       soundToggle.addEventListener('click', () => {
         soundOn = !soundOn;
